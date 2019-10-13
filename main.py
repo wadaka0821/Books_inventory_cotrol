@@ -1,3 +1,5 @@
+import show_inventory
+import file_operation
 
 menus = {"1":"在庫表示","2":"在庫情報の編集","3":"終了"}
 
@@ -5,14 +7,15 @@ while True:
     print("-----------在庫管理システム-----------")
     print("-----------基本操作メニュー-----------")
     for i,j in menus.items():
-        print(i.ljust(3),"|",j.center(22))
+        print("{:<3}{}{:^24}".format(i,"|",j,))
+    print("--------------------------------------")
 
-    select = input("操作したいオプション番号を入力してください")
+    select = input("操作したいオプション番号を入力してください\n")
 
     if i == "1":
-        pass
+        show_inventory.Show_inventory()
     elif i == "2":
-        pass
+        file_operation.File_operation()
     elif i == "3":
         break
     else:
