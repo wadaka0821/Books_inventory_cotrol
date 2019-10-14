@@ -9,16 +9,15 @@ class Show_inventory:
     def __init__(self):
         self.menus = {"1":"在庫の表示","2":"条件の指定","3":"ソート方法の指定","4":"終了"}
         self.all_products = list()
-        self.conditioned_products = list()
         self.conditions = [["1","カテゴリー",0]]
         self.sorts = [["1","The number of inventory",0],["2","product index",1]]
 
         self.menu()
 
     def menu(self):
-        self.road_current()
+        init = self.road_current()
         if len(self.all_products) <= 50:
-            self.show()
+            self.show(init)
 
         while True:
             print("-"*21+"在庫表示"+"-"*21)
@@ -29,12 +28,12 @@ class Show_inventory:
 
             select = input()
             if select == "1":
-                self.update_products()
+                lis = self.update_products()
+                self.show(lis)
             elif select == "2":
                 self.set_condition()
             elif select == "3":
                 self.set_sorts()
-                self.show()
             elif select == "4":
                 break
             else:
@@ -93,17 +92,33 @@ class Show_inventory:
 
     def update_products(self):
         #指定された条件とソート方法で表示対象のリストを更新します
-        pass
+        #まず条件設定から必要な要素だけを取り出します
+
+        if self.conditions[0][2] == 1:
+            conditioned_products = list()
+            select_category = set(input("探したいカテゴリーを半角スペース区切りで入力してください\n").split())
+            conditioned_products = list()
+            for i in self.all_products:
+                if i[0][:2:] in select_category:
+                    conditioned_products.append(i)
+
+        #次にソート方法の設定からソートを行います
+        if self.sorts[0][2] == 1:
+            conditioned_products.sort(key=lambda x:x[2])
+        elif self.sorts[1][2] == 1:
+            conditioned_products.sort(key=lambda x:x[0][2::])
+
+        return conditioned_products
 
     def road_current(self):
         with open("books_info/current.csv","r") as f:
             reader = csv.reader(f)
             for i in reader:
                 self.all_products.append([i[0],i[1],int(i[2])])
-        self.conditioned_products = copy.deepcopy(self.all_products)
+        return copy.deepcopy(self.all_products)
 
-    def show(self):
+    def show(self,conditioned_products):
         print("-"*50)
         print("{:-^14}{:-^20}{:-^7}".format("商品番号","商品名","個数"))
-        for i in self.conditioned_products:
+        for i in conditioned_products:
             print("{0[0]:^18}|{0[1]:^20}|{0[2]:>10}|".format(i))
