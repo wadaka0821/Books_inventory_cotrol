@@ -12,11 +12,11 @@ while True:
 
     select = input("操作したいオプション番号を入力してください\n")
 
-    if i == "1":
+    if select == "1":
         show_inventory.Show_inventory()
-    elif i == "2":
+    elif select == "2":
         file_operation.File_operation()
-    elif i == "3":
+    elif select == "3":
         break
     else:
         print("入力された番号に誤りがあります")
