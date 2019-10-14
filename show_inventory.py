@@ -10,8 +10,8 @@ class Show_inventory:
         self.menus = {"1":"在庫の表示","2":"条件の指定","3":"ソート方法の指定","4":"終了"}
         self.all_products = list()
         self.conditioned_products = list()
-        self.condition = [["1","カテゴリー",0]]
-        self.sorts = list()
+        self.conditions = [["1","カテゴリー",0]]
+        self.sorts = [["1","The number of inventory",0],["2","product index",1]]
 
         self.menu()
 
@@ -33,7 +33,7 @@ class Show_inventory:
             elif select == "2":
                 self.set_condition()
             elif select == "3":
-                self.sorts()
+                self.set_sorts()
                 self.show()
             elif select == "4":
                 break
@@ -43,8 +43,8 @@ class Show_inventory:
 
     def set_condition(self):
         while True:
-            print("-"*20+"現在の条件指定"+"-"*20)
-            for i in self.condition:
+            print("-"*20+"現在の条件設定"+"-"*20)
+            for i in self.conditions:
                 print(i[0].ljust(3),"|",i[1].center(24),"|",end="")
                 if i[2] == 0:
                     print("設定されていません")
@@ -58,14 +58,36 @@ class Show_inventory:
                     break
                 else:
                     select = select.split()
-                    self.condition[int(select[0])-1][2] = int(select[1])
+                    self.conditions[int(select[0])-1][2] = int(select[1])
             except:
                 print("入力方法に誤りがあります")
 
 
     def set_sorts(self):
         #ソート方法の指定を行います
-        pass
+        while True:
+            print("-"*20+"現在のソート指定"+"-"*20)
+            for i in self.sorts:
+                if i[2] == 1:
+                    print("{:^50}".format(i[1]))
+                    break
+            else:
+                self.sorts[1][2] = 1
+                print("{:^50}".format(self.sorts[1][1]))
+            print("-"*54)
+            for i in self.sorts:
+                print("{:<3}|{:^34}|".format(i[0],i[1]),end="")
+                if i[2] == 1:
+                    print("設定中".center(16))
+                else:
+                    print("-"*18)
+
+            select = input("指定したい設定のオプション番号を入力してください\n")
+            for i in self.sorts:
+                if select == i[0]:
+                    i[2] = 1
+                else:
+                    i[2] = 0
 
     def update_products(self):
         #指定された条件とソート方法で表示対象のリストを更新します
