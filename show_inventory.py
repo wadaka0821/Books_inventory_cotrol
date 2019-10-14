@@ -82,7 +82,9 @@ class Show_inventory:
                 else:
                     print("-"*18)
 
-            select = input("指定したい設定のオプション番号を入力してください\n")
+            select = input("指定したい設定のオプション番号を入力してください(終了する場合はe)\n")
+            if select == "e":
+                break
             for i in self.sorts:
                 if select == i[0]:
                     i[2] = 1
