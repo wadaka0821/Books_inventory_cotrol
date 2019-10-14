@@ -7,6 +7,7 @@ class File_operation:
         self.menus = {"1":"ファイル読み込み","2":"ファイル名の指定(初期値はrs_list.csv)","3":"現在の指定されたファイル名の表示","4":"終了"}
         self.categories = dict()
         self.input_filename = "rs_list.csv"
+        self.current = dict()
 
         self.menu()
 
@@ -37,21 +38,39 @@ class File_operation:
         time = datetime.datetime.today()
         add_list = list()
         sub_list = list()
+        adding_list = list()
+
+        self.road_current()
 
         with open(self.input_filename,"r") as f:
             reader = csv.reader(f)
+            #在庫数が負になっても警告なし
             for i in reader:
+                if i[0]+i[1] in self.current:
+                    self.current[i[0]+i[1]][1] += int(i[3])
+                else:
+                    self.current.update({i[0]+i[1]:[i[2],i[3]]})
+
                 if int(i[3]) > 0:
                     add_list.append(i)
                 elif int(i[3]) < 0:
                     sub_list.append(i)
+            print(self.current)
+            for i,j in self.current.items():
+                adding_list.append([i]+j)
+            self.writerow_file(adding_list,"books_info/current.csv","w")
+            self.writerow_file(add_list,"books_info/time_log/add.csv","a")
+            self.writerow_file(sub_list,"books_info/time_log/sub.csv","a")
 
-        with open("books_info/time_log/add.csv","a") as f:
-            writer = csv.writer(f)
-            for i in add_list:
-                writer.writerow([time]+i)
+    def road_current(self):
+        with open("books_info/current.csv","r") as f:
+            reader = csv.reader(f)
+            for i in reader:
+                if i[0]+i[1] not in self.current:
+                    self.current.update({i[0]+i[1]:[i[2],int(i[3])]})
+        print(self.current)
 
-        with open("books_info/time_log/sub.csv","a") as f:
+    def writerow_file(self,write_list,original_file,mode):
+        with open(original_file,mode) as f:
             writer = csv.writer(f)
-            for i in sub_list:
-                writer.writerow([time]+i)
+            writer.writerows(write_list)
