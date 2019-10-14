@@ -7,17 +7,47 @@ import copy
 #商品名
 class Show_inventory:
     def __init__(self):
+        self.menus = {"1":"在庫の表示""2":"条件の指定","3":"ソート方法の指定","4":"終了"}
         self.all_products = list()
         self.conditioned_products = list()
+        self.condition = dict()
+        self.sorts = list()
+
         self.menu()
 
     def menu(self):
         self.road_current()
         self.show()
         while True:
-            print("-----------在庫表示-----------")
-            print("------------------------------")
-            input()
+            print("-"*21+"在庫表示"+"-"*21)
+            print("-"*50)
+            for i,j in self.menus.items():
+                print(i.ljust(3),"|",j.center(28))
+
+            select = input()
+            if select == "1":
+                self.update_products()
+            elif select == "2":
+                self.set_condition()
+            elif select == "3":
+                self.sorts()
+            elif select == "4":
+                break
+            else:
+                print("入力されたオプション番号に誤りがあります")
+                continue
+
+    def set_conditon(self):
+        #条件指定を行います
+        pass
+
+    def set_sorts(self):
+        #ソート方法の指定を行います
+        pass
+
+    def update_products(self):
+        #指定された条件とソート方法で表示対象のリストを更新します
+        pass
 
     def road_current(self):
         with open("books_info/current.csv","r") as f:
@@ -30,4 +60,4 @@ class Show_inventory:
         print("-"*50)
         print("{:-^14}{:-^20}{:-^7}".format("商品番号","商品名","個数"))
         for i in self.conditioned_products:
-            print("{0[0]:^18}|{0[1]:^20}|{0[2]:>7}|".format(i))
+            print("{0[0]:^18}|{0[1]:^20}|{0[2]:>10}|".format(i))
