@@ -46,16 +46,15 @@ class File_operation:
             reader = csv.reader(f)
             #在庫数が負になっても警告なし
             for i in reader:
-                if i[0]+i[1] in self.current:
-                    self.current[i[0]+i[1]][1] += int(i[3])
+                if i[0] in self.current:
+                    self.current[i[0]][1] += int(i[2])
                 else:
-                    self.current.update({i[0]+i[1]:[i[2],i[3]]})
+                    self.current.update({i[0]:[i[1],int(i[2])]})
 
-                if int(i[3]) > 0:
-                    add_list.append(i)
-                elif int(i[3]) < 0:
-                    sub_list.append(i)
-            print(self.current)
+                if int(i[2]) > 0:
+                    add_list.append([time]+i)
+                elif int(i[2]) < 0:
+                    sub_list.append([time]+i)
             for i,j in self.current.items():
                 adding_list.append([i]+j)
             self.writerow_file(adding_list,"books_info/current.csv","w")
@@ -66,9 +65,8 @@ class File_operation:
         with open("books_info/current.csv","r") as f:
             reader = csv.reader(f)
             for i in reader:
-                if i[0]+i[1] not in self.current:
-                    self.current.update({i[0]+i[1]:[i[2],int(i[3])]})
-        print(self.current)
+                if i[0] not in self.current:
+                    self.current.update({i[0]:[i[1],int(i[2])]})
 
     def writerow_file(self,write_list,original_file,mode):
         with open(original_file,mode) as f:
