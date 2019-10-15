@@ -122,7 +122,7 @@ class Show_inventory:
         return conditioned_products
 
     def road_current(self):
-        with open("books_info/current.csv","r") as f:
+        with open("books_info/current/current1.csv","r") as f:
             reader = csv.reader(f)
             for i in reader:
                 self.all_products.append([i[0],i[1],int(i[2])])
