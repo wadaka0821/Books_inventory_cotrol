@@ -2,6 +2,8 @@ import re
 import datetime
 import csv
 
+#追加予定機能：１０個ほどのcurrent更新履歴を保管し、以前の状態を復帰できるようにする
+
 class File_operation:
     def __init__(self):
         self.menus = {"1":"ファイル読み込み","2":"ファイル名の指定(初期値はrs_list.csv)","3":"現在の指定されたファイル名の表示","4":"終了"}
