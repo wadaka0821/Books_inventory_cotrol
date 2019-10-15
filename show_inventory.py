@@ -9,8 +9,10 @@ class Show_inventory:
     def __init__(self):
         self.menus = {"1":"在庫の表示","2":"条件の指定","3":"ソート方法の指定","4":"終了"}
         self.all_products = list()
+        #[インデックス、条件設定名、yes or no(1 or 0)]
         self.conditions = [["1","カテゴリー",0]]
-        self.sorts = [["1","The number of inventory",0],["2","product index",1]]
+        #[インデックス、ソート設定名、yes or no (1 or 0)、reverse設定]
+        self.sorts = [["1","The number of inventory",0,False],["2","product index",1,False]]
 
         self.menu()
 
@@ -67,7 +69,10 @@ class Show_inventory:
         while True:
             print("-"*20+"現在のソート指定"+"-"*20)
             for i in self.sorts:
-                if i[2] == 1:
+                if i[2] == 1 and i[3] == True:
+                    print("{:^50}".format(i[1]+"(reverse)"))
+                    break
+                elif i[2] == 1 and i[3] == False:
                     print("{:^50}".format(i[1]))
                     break
             else:
@@ -76,19 +81,26 @@ class Show_inventory:
             print("-"*54)
             for i in self.sorts:
                 print("{:<3}|{:^34}|".format(i[0],i[1]),end="")
-                if i[2] == 1:
+                if i[2] == 1 and i[3] == True:
+                    print("設定中(reverse)".center(16))
+                elif i[2] == 1 and i[3] == False:
                     print("設定中".center(16))
                 else:
                     print("-"*18)
 
-            select = input("指定したい設定のオプション番号を入力してください(終了する場合はe)\n")
-            if select == "e":
+            select = input("指定したい設定のオプション番号を入力してください(reverseさせる場合は半角スペース区切りで1)(終了する場合はe)\n").split()
+            if select == ["e"]:
                 break
             for i in self.sorts:
-                if select == i[0]:
+                if select[0] == i[0] and len(select) == 1:
                     i[2] = 1
+                    i[3] = False
+                elif select[0] == i[0] and len(select) == 2:
+                    i[2] = 1
+                    i[3] = True
                 else:
                     i[2] = 0
+                    i[3] = False
 
     def update_products(self):
         #指定された条件とソート方法で表示対象のリストを更新します
@@ -104,9 +116,9 @@ class Show_inventory:
 
         #次にソート方法の設定からソートを行います
         if self.sorts[0][2] == 1:
-            conditioned_products.sort(key=lambda x:x[2])
+            conditioned_products.sort(key=lambda x:x[2],reverse=self.sorts[0][3])
         elif self.sorts[1][2] == 1:
-            conditioned_products.sort(key=lambda x:x[0][2::])
+            conditioned_products.sort(key=lambda x:x[0][2::],reverse=self.sorts[1][3])
 
         return conditioned_products
 
