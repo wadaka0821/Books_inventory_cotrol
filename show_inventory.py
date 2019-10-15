@@ -6,7 +6,6 @@ import copy
 #在庫数
 #商品番号
 
-#追加予定：ファイル内容の表示時のページング
 class Show_inventory:
     def __init__(self):
         self.menus = {"1":"在庫の表示","2":"条件の指定","3":"ソート方法の指定","4":"終了"}
@@ -19,9 +18,7 @@ class Show_inventory:
         self.menu()
 
     def menu(self):
-        init = self.road_current()
-        if len(self.all_products) <= 50:
-            self.show(init)
+        self.road_current()
 
         while True:
             print("-"*21+"在庫表示"+"-"*21)
@@ -132,7 +129,43 @@ class Show_inventory:
         return copy.deepcopy(self.all_products)
 
     def show(self,conditioned_products):
-        print("-"*50)
-        print("{:-^14}{:-^20}{:-^7}".format("商品番号","商品名","個数"))
-        for i in conditioned_products:
-            print("{0[0]:^18}|{0[1]:^20}|{0[2]:>10}|".format(i))
+        products_num = len(conditioned_products)
+        paging = int(products_num/10)
+        forward = ""
+        back = ""
+
+        if products_num % 10 != 0:
+            paging += 1
+        now_page = 0
+
+        while True:
+
+            print("-"*50)
+            print("{:-^14}{:-^20}{:-^7}".format("商品番号","商品名","個数"))
+
+            if now_page == paging-1:
+                for i in conditioned_products[now_page*10::]:
+                    print("{0[0]:^18}|{0[1]:^20}|{0[2]:>10}|".format(i))
+            else:
+                for i in conditioned_products[now_page*10:(now_page+1)*10:]:
+                    print("{0[0]:^18}|{0[1]:^20}|{0[2]:>10}|".format(i))
+            if now_page != 0:
+                forward = "<"
+            else:
+                forward = ""
+            if now_page < paging-1:
+                back = ">"
+            else:
+                back = ""
+
+            print("-"*23+forward+"-"+str(now_page+1)+"-"+back+"-"*23)
+
+            select = input()
+            if select == "<" and now_page != 0:
+                now_page -= 1
+            elif select == ">" and now_page != paging-1:
+                now_page += 1
+            elif select == "e":
+                break
+            else:
+                continue

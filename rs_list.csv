@@ -1,5 +1,10 @@
-AE000001,sample,3
-AD000002,sample2,2
-AS000010,sample3,-20
-AV001111,sample4,1
-SG100023,sample5,-1
+AR000001,sample,3
+AB000002,sample2,2
+AL000010,sample3,4
+BU001111,sample4,1
+PA100023,sample5,11
+AR030001,sample,3
+AB004002,sample2,2
+AL070010,sample3,4
+BP001111,sample4,1
+PK100023,sample5,11
