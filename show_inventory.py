@@ -105,14 +105,14 @@ class Show_inventory:
     def update_products(self):
         #指定された条件とソート方法で表示対象のリストを更新します
         #まず条件設定から必要な要素だけを取り出します
-
+        conditioned_products = list()
         if self.conditions[0][2] == 1:
-            conditioned_products = list()
             select_category = set(input("探したいカテゴリーを半角スペース区切りで入力してください\n").split())
-            conditioned_products = list()
             for i in self.all_products:
                 if i[0][:2:] in select_category:
                     conditioned_products.append(i)
+        else:
+            conditioned_products = copy.deepcopy(self.all_products)
 
         #次にソート方法の設定からソートを行います
         if self.sorts[0][2] == 1:
