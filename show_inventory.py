@@ -160,12 +160,20 @@ class Show_inventory:
 
             print("-"*23+forward+"-"+str(now_page+1)+"-"+back+"-"*23)
 
-            select = input()
-            if select == "<" and now_page != 0:
+            select = input("1ページ進む：>\n1ページ戻る：<\nページ指定：switch to (page_number:最大値(%d))\n終了：e\n" % paging).split()
+            if select[0] == "<" and now_page != 0:
                 now_page -= 1
-            elif select == ">" and now_page != paging-1:
+            elif select[0] == ">" and now_page != paging-1:
                 now_page += 1
-            elif select == "e":
+            elif select[0] == "switch":
+                try:
+                    if int(select[2]) <= paging and int(select[2]) > 0:
+                        now_page = int(select[2])-1
+                    else:
+                        print("ページ番号に誤りがあります")
+                except:
+                    print("ページの指定方法に誤りがあります")
+            elif select[0] == "e":
                 break
             else:
                 continue
