@@ -44,12 +44,15 @@ class File_operation:
 
         with open(self.input_filename,"r") as f:
             reader = csv.reader(f)
+            warning = list()
             #在庫数が負になっても警告なし
             for i in reader:
                 if i[0] in self.current:
                     self.current[i[0]][1] += int(i[2])
                 else:
                     self.current.update({i[0]:[i[1],int(i[2])]})
+                if self.current[i[0]][1] < 0:
+                    warning.append(i[0])
 
                 if int(i[2]) > 0:
                     add_list.append([time]+i)
@@ -57,6 +60,16 @@ class File_operation:
                     sub_list.append([time]+i)
             for i,j in self.current.items():
                 adding_list.append([i]+j)
+            #warning に要素がある場合に警告を行います
+            if len(warning) > 0:
+                print("エラー商品番号")
+                for i in warning:
+                    print(i)
+                select = input("ファイルの読み込み時に在庫数が負になったものがあります\n読み込みを続行しますか?(yes or no)")
+                if select == "no":
+                    print("読み込みを中止しました")
+                    return None
+
             self.writerow_file(adding_list,"books_info/current.csv","w")
             self.writerow_file(add_list,"books_info/time_log/add.csv","a")
             self.writerow_file(sub_list,"books_info/time_log/sub.csv","a")
