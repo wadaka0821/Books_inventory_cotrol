@@ -3,14 +3,15 @@ import datetime
 import csv
 import shutil
 import os
+import show_inventory
 
 #追加予定機能：１０個ほどのcurrent更新履歴を保管し、以前の状態を復帰できるようにする
 #履歴保存は終了
-#あと復帰用メソッドの作成
+#復帰用メソッドも完成
 
 class File_operation:
     def __init__(self):
-        self.menus = {"1":"ファイル読み込み","2":"ファイル名の指定(初期値はrs_list.csv)","3":"現在の指定されたファイル名の表示","4":"終了"}
+        self.menus = {"1":"ファイル読み込み","2":"ファイル名の指定(初期値はrs_list.csv)","3":"現在の指定されたファイル名の表示","4":"以前の状態の復帰","5":"終了"}
         self.categories = dict()
         self.input_filename = "rs_list.csv"
         self.current = dict()
@@ -36,6 +37,8 @@ class File_operation:
             elif select == "3":
                 print("現在指定されているファイル名：",self.input_filename)
             elif select == "4":
+                self.restore_menu()
+            elif select == "5":
                 break
             else:
                 print("入力されたオプション番号に誤りがあります")
@@ -46,7 +49,7 @@ class File_operation:
         sub_list = list()
         adding_list = list()
 
-        self.road_current()
+        self.current = self.road_current("1","dic")
 
         with open(self.input_filename,"r") as f:
             reader = csv.reader(f)
@@ -82,21 +85,59 @@ class File_operation:
             self.writerow_file(add_list,"books_info/time_log/add.csv","a")
             self.writerow_file(sub_list,"books_info/time_log/sub.csv","a")
 
-    def road_current(self):
-        with open("books_info/current/current1.csv","r") as f:
+    def road_current(self,num,mode):
+        ans = list()
+        om = ""
+        if mode == "dic":
+            ans = dict()
+            om = ans.update
+        elif mode == "lis":
+            ans = list()
+            om = ans.append
+
+        with open("books_info/current/current"+num+".csv","r") as f:
             reader = csv.reader(f)
             for i in reader:
-                if i[0] not in self.current:
-                    self.current.update({i[0]:[i[1],int(i[2])]})
+                if mode == "dic":
+                    om({i[0]:[i[1],int(i[2])]})
+                else:
+                    om(i)
+        return ans
 
     def save_history(self):
-        os.remove("books_info/current/current10.csv")
-        for i in range(9,0,-1):
+        for i in range(10,0,-1):
             file_new = "books_info/current/current" + str(i+1) + ".csv"
             file = "books_info/current/current" + str(i) + ".csv"
 
             shutil.move(file,file_new)
 
+    def restore_menu(self):
+        while True:
+            print("-"*50)
+            for i in range(1,11,1):
+                print(str(i).ljust(3),"|"," "*10,"current"+str(i)+".csv")
+            print("-"*50)
+
+            select = input("以前の状態を復帰したい場合：restore (番号)\nファイルの内容を確認したい場合：show (番号)\n終了：e\n").split()
+            if select[0] == "restore":
+                try:
+                    self.restore(select[1])
+                    print("正常に復帰が行われました")
+                except:
+                    print("入力方法か番号に誤りがあります")
+            elif select[0] == "show":
+                lis = self.road_current(select[1],"lis")
+                #特例的なshowメソッドの呼び出し
+                show_inventory.Show_inventory.show(None,lis)
+            elif select[0] == "e":
+                break
+            else:
+                print("入力方法に誤りがあります")
+
+    def restore(self,file_num):
+        shutil.copy("books_info/current/current"+file_num+".csv","books_info/current/temp.csv")
+        self.save_history()
+        shutil.move("books_info/current/temp.csv","books_info/current/current1.csv")
 
     def writerow_file(self,write_list,original_file,mode):
         with open(original_file,mode) as f:
