@@ -54,7 +54,6 @@ class File_operation:
         with open(self.input_filename,"r") as f:
             reader = csv.reader(f)
             warning = list()
-            #在庫数が負になっても警告なし
             for i in reader:
                 if i[0] in self.current:
                     self.current[i[0]][1] += int(i[2])
@@ -85,6 +84,20 @@ class File_operation:
             self.writerow_file(add_list,"books_info/time_log/add.csv","a")
             self.writerow_file(sub_list,"books_info/time_log/sub.csv","a")
 
+            print("正常にファイルの読み込みが完了しました")
+            while True:
+                select = input("読み込みを行ったファイルの内容を破棄しますか？（yes or no）（推奨）")
+                if select == "yes":
+                    with open(self.input_filename,"w") as f:
+                        writer = csv.writer(f)
+                        writer.writerow(list())
+                    break
+                elif == "no":
+                    print("ファイル内容を保持しました")
+                    break
+                else:
+                    print("正しい入力をしてください")
+
     def road_current(self,num,mode):
         ans = list()
         om = ""
@@ -96,6 +109,9 @@ class File_operation:
             om = ans.append
 
         with open("books_info/current/current"+num+".csv","r") as f:
+            
+    def road_current(self):
+        with open("books_info/current.csv","r") as f:
             reader = csv.reader(f)
             for i in reader:
                 if mode == "dic":
