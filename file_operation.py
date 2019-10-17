@@ -92,7 +92,7 @@ class File_operation:
                         writer = csv.writer(f)
                         writer.writerow(list())
                     break
-                elif == "no":
+                elif select == "no":
                     print("ファイル内容を保持しました")
                     break
                 else:
@@ -109,9 +109,6 @@ class File_operation:
             om = ans.append
 
         with open("books_info/current/current"+num+".csv","r") as f:
-            
-    def road_current(self):
-        with open("books_info/current.csv","r") as f:
             reader = csv.reader(f)
             for i in reader:
                 if mode == "dic":
